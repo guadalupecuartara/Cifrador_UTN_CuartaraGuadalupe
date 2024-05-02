@@ -1,0 +1,60 @@
+@startuml
+
+|User|
+start
+if() then (Registered user)
+    label sp_lab0
+    label sp_lab1
+    label sp_lab2
+    label sp_lab3
+    label sp_lab4
+    label sp_lab5
+    label sp_lab6
+    label sp_lab7
+    label sp_lab8
+    repeat 
+    :enter credentials 
+    to login; 
+    |System|
+    |Database|
+    :validate user name
+    and password;
+    repeat while ( ) is (incorrect data) not (correct data)
+
+
+else (Unregistered user)  
+    |User|
+        repeat 
+        :enter data 
+        to register;
+        |System|
+        :validate email 
+        address;
+        repeat while( ) is (Invalid email) not(Valid email)
+    |Database|
+    :Register new user;
+    :Users]
+    
+endif
+|System|
+:Comunicate ingress;
+
+|User|
+:Text input to encrypt (optional: key);
+|System|
+:display ciphertext;
+|User|
+:Choose whether to save the log;
+if() then (If you want to save it)
+    |System|
+    :Send encrypted text;
+    |Database|
+    :Add encrypted text;
+    -> update;
+    :History] 
+else(You don't want to save it)
+endif
+|User| 
+stop
+
+@enduml
