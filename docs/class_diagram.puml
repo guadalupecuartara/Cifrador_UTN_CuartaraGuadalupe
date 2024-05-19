@@ -1,5 +1,5 @@
 @startuml ClassDiagram
-class Account{
+/'class Account{
     -username: str
     -email: str
     -password: str
@@ -7,7 +7,7 @@ class Account{
     -settings: UserSettings
     +created_account()
     +delete_account()
-}
+}'/
 class User{
     -creation_date: datetime
     -last_login_date: datetime
@@ -21,6 +21,9 @@ class User{
     +delete_text(text_id: int)
     +search_text(keyword: str)
     +view_profile()
+    +save()
+    +delete()
+    +find(id:int)
 }
 class UserSettings{
     -language: str
@@ -38,29 +41,42 @@ enum Roles{
     admin
 }
 class Text{
+    -id:int
     -content: str
     -length: int
     -language: str
     -history: TextHistory
-    +check_length(): bool
-    +encrypt_text()
+    +change_content(new_content: str)
+    +save()
+    +delete()
+    +find(id:int)
+    +encrypt_text(key: bytes)
+    +decrypt_text(key: bytes)
 }
 class TextHistory{
+    +id:int
+    +content: str
     -entries: List[str]
     +add_entry(entry: str)
+    +save()
+    +delete()
+    +find(id:int)
     +view_history()
+    +view_versions()
+    +change_version()
 }
 class EncryptedText{
     -data: str
     -length: int
     -text_password: str
-    +decipher_text(): str
+    +encrypt_text(): str
+    +decrypt_text(): str
 }
 
 User -- Role
 Role - Roles
 Text -- EncryptedText
-Account-- User
+/'Account-- User'/
 User -- UserSettings
 User - Text
 Text -- TextHistory
