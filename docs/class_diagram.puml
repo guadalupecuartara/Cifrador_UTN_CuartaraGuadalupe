@@ -9,9 +9,13 @@
     +delete_account()
 }'/
 class User{
+    -id: int
+    -password: str
     -creation_date: datetime
     -last_login_date: datetime
     -text_records: List[Text]
+    -settings:UserSettings
+    +email: str
     +login(email: str, password: str)
     +signoff()
     +insert_text(text: Text)
@@ -50,8 +54,8 @@ class Text{
     +save()
     +delete()
     +find(id:int)
-    +encrypt_text(key: bytes)
-    +decrypt_text(key: bytes)
+    +encrypt_text(key: bytes): EncryptedContent
+    +decrypt_text(key: bytes): str
 }
 class TextHistory{
     +id:int
@@ -65,7 +69,7 @@ class TextHistory{
     +view_versions()
     +change_version()
 }
-class EncryptedText{
+class EncryptedContent{
     -data: str
     -length: int
     -text_password: str
@@ -75,7 +79,7 @@ class EncryptedText{
 
 User -- Role
 Role - Roles
-Text -- EncryptedText
+Text -- EncryptedContent
 /'Account-- User'/
 User -- UserSettings
 User - Text
