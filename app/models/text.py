@@ -20,7 +20,7 @@ class Text(db.Model):
         self.language = language
         self.length = len(content) #Calcular la longitud del texto 
         from app.models.text_history import TextHistory
-        self.history = TextHistory() # Crear un nuevo historial de texto
+        self.history = TextHistory(content=content) # Crear un nuevo historial de texto
     
     def change_content(self, new_content: str) -> None:
         self.content = new_content

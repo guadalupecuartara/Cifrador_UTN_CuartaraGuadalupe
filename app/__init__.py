@@ -9,7 +9,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 ma = Marshmallow()
 
-def create_app() -> None:
+def create_app() -> Flask:
     """
     Using an Application Factory
     Ref: Book Flask Web Development Page 78
