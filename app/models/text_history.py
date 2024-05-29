@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from typing import List
-from typing import Optional
+from typing import List,Optional
 from app import db
-from app.models.text import Text
+#from app.models.text import Text
 
 @dataclass(init=False, repr=True, eq=True)
 class TextHistory(db.Model):

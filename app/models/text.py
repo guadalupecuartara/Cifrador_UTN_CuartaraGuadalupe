@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 from app import db
-from .encrypted_content import EncryptedContent
-from .text_history import TextHistory
+#from .encrypted_content import EncryptedContent
+#from .text_history import TextHistory
 
 @dataclass(init=False, repr=True, eq=True)
 class Text(db.Model):
@@ -19,6 +19,7 @@ class Text(db.Model):
         self.content = content
         self.language = language
         self.length = len(content) #Calcular la longitud del texto 
+        from app.models.text_history import TextHistory
         self.history = TextHistory() # Crear un nuevo historial de texto
     
     def change_content(self, new_content: str) -> None:
@@ -48,7 +49,9 @@ class Text(db.Model):
         return cls.query.filter_by(**kwargs).all()
 
     def encrypt_content(self, key: bytes) -> 'EncryptedContent':
+        from .encrypted_content import EncryptedContent
         return EncryptedContent.encrypt(self.content, key)
 
     def decrypt_content(self, key: bytes) -> str:
+        from .encrypted_content import EncryptedContent
         return EncryptedContent.decrypt(self.content, key)
