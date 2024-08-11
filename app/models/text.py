@@ -11,10 +11,11 @@ class Text(db.Model):
     content: str = db.Column(db.String(120),nullable=False) # Contenido del texto
     length: int = db.Column(db.Integer, nullable=False) # Longitud del texto
     language: str = db.Column(db.String(120), nullable=False) # Lenguaje del texto
-    user_id: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # ID del usuario propietario del texto
-    history_id: int = db.Column(db.Integer, db.ForeignKey('text_histories.id'), nullable=True) # ID del historial del texto
     history = db.relationship('TextHistory', backref='text', uselist=False) # Relación uno a uno con TextHistory
-
+    user_id: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True) # ID del usuario propietario del texto
+    encryptor_id: int = db.Column(db.Integer, db.ForeignKey('encryptors.id'), nullable=True) 
+    encryptor= db.relationship('Encryptor', backref="text",uselist=False)
+    
     def __init__(self, content: str, language: str):
         self.content = content
         self.language = language

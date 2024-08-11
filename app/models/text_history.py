@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List,Optional
 from app import db
-#from app.models.text import Text
+from app.models.text import Text
 
 @dataclass(init=False, repr=True, eq=True)
 class TextHistory(db.Model):
@@ -10,6 +10,7 @@ class TextHistory(db.Model):
     content: str = db.Column(db.String(100), nullable=False)
     entries: List[str] = db.Column(db.PickleType, default=[]) 
     text_id: int = db.Column(db.Integer, db.ForeignKey('texts.id'), nullable=False)# ID del texto asociado
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
     
     def add_entry(self, entry: str) -> None:
         self.entries.append(entry)  
@@ -24,12 +25,14 @@ class TextHistory(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    @classmethod
     def find(cls, id: int) -> "TextHistory":
         return cls.query.get(id)
     
     def view_history(self) -> List[str]:
         return self.entries
 
+    @staticmethod
     def view_versions(self) -> List[int]:
         versions = TextHistory.query.filter_by(text_id=self.text_id).order_by(TextHistory.id.asc()).all()  # Obtener todas las versiones anteriores del texto
         return [version.id for version in versions] # Retornar una lista de los IDs de las versiones
