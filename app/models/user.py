@@ -22,3 +22,10 @@ class User(db.Model):
         self.data = user_data
         
     #TODO: Implementar metodos para agregar, eliminar y listar roles
+    def add_role(self, role):
+        if role not in self.roles:
+            self.roles.append(role)
+
+    def remove_role(self, role):
+        if role in self.roles:
+            self.roles.remove(role)
