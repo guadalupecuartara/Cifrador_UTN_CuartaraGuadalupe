@@ -16,66 +16,66 @@ class TextHistoryTestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def test_text_history_creation(self):
+    def test_add_entry(self):
         text = Text(content="Hello World", language="English")
         text.save()
 
-        text_history = TextHistory(content="Initial content", text_id=text.id)
-        text_history.save()
+        history = TextHistory(text_id=text.id, content="Initial Content")
+        history.save()
+        history.add_entry("First Edit")
+        self.assertIn("First Edit", history.entries)
 
-        self.assertEqual(text_history.content, "Initial content")
-        self.assertEqual(text_history.text_id, text.id)
+    def test_save(self):
+        text = Text(content="Hello World", language="English")
+        text.save()
+        
+        history = TextHistory(text_id=text.id, content="Initial Content")
+        saved_history = history.save()
+        self.assertEqual(saved_history.content, "Initial Content")
 
-    def test_text_history_add_entry(self):
+    def test_delete(self):
+        text = Text(content="Hello World", language="English")
+        text.save()
+        
+        history = TextHistory(text_id=text.id, content="Initial Content")
+        history.save()
+        history_id = history.id
+        history.delete()
+        self.assertIsNone(TextHistory.find(history_id))
+        
+    def test_view_history(self):
         text = Text(content="Hello World", language="English")
         text.save()
 
-        text_history = TextHistory(content="Initial content", text_id=text.id)
-        text_history.save()
+        history = TextHistory(text_id=text.id, content="Initial Content")
+        history.add_entry("First Edit")
+        history.add_entry("Second Edit")
+        self.assertEqual(history.view_history(), ["First Edit", "Second Edit"])
 
-        text_history.add_entry("Updated content")
-        self.assertEqual(len(text_history.entries), 1)
-        self.assertEqual(text_history.entries[0], "Updated content")
-
-    def test_text_history_view_history(self):
+    def test_view_versions(self):
         text = Text(content="Hello World", language="English")
         text.save()
-
-        text_history = TextHistory(content="Initial content", text_id=text.id)
-        text_history.save()
-
-        text_history.add_entry("Updated content")
-        history = text_history.view_history()
-        self.assertEqual(len(history), 1)
-        self.assertEqual(history[0], "Updated content")
-
-    def test_text_history_view_versions(self):
-        text = Text(content="Hello World", language="English")
-        text.save()
-
-        text_history1 = TextHistory(content="Initial content", text_id=text.id)
-        text_history1.save()
-
-        text_history2 = TextHistory(content="Updated content", text_id=text.id)
-        text_history2.save()
-
-        versions = text_history2.view_versions()
+        history1 = TextHistory(text_id=text.id, content="Version 1")
+        history1.save()
+        history2 = TextHistory(text_id=text.id, content="Version 2")
+        history2.save()
+        
+        versions = TextHistory.view_versions(text.id)
         self.assertEqual(len(versions), 2)
-        self.assertIn(text_history1.id, versions)
-        self.assertIn(text_history2.id, versions)
+        self.assertIn(versions[0].content, "Version 2")
+        self.assertIn(versions[1].content, "Version 1")
 
-    def test_text_history_change_version(self):
+    def test_change_version(self):
         text = Text(content="Hello World", language="English")
         text.save()
 
-        text_history1 = TextHistory(content="Initial content", text_id=text.id)
-        text_history1.save()
-
-        text_history2 = TextHistory(content="Updated content", text_id=text.id)
-        text_history2.save()
-
-        text_history2.change_version(text_history1.id)
-        self.assertEqual(text_history2.content, "Initial content")
+        history1 = TextHistory(content="Initial content", text_id=text.id)
+        history1.save()
+        history2 = TextHistory(content="Updated content", text_id=text.id)
+        history2.save()
+        
+        history2.change_version(history1.id)
+        self.assertEqual(history2.content, "Initial content")
 
 if __name__ == '__main__':
     unittest.main()

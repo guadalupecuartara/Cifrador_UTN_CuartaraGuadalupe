@@ -37,11 +37,13 @@ class TextHistory(db.Model):
         return self.entries
 
     @staticmethod
-    def view_versions(self) -> List[int]:
-        versions = TextHistory.query.filter_by(text_id=self.text_id).order_by(TextHistory.id.asc()).all()  # Obtener todas las versiones anteriores del texto
-        return [version.id for version in versions] # Retornar una lista de los IDs de las versiones
-
-    def change_version(self, version_index: int) -> Optional[str]:
+    def view_versions(text_id: int) -> List["TextHistory"]:
+        return (
+        TextHistory.query.filter_by(text_id=text_id)
+        .order_by(TextHistory.timestamp.desc())
+        .all() )
+        
+    def change_version(self, version_id: int) -> Optional[str]:
         version = TextHistory.query.filter_by(id=version_id, text_id=self.text_id).first()# Buscar la versión específica del texto por su ID
         if version:
             self.content = version.content# Actualizar el contenido del texto a la versión seleccionada

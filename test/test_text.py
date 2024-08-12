@@ -1,7 +1,7 @@
 import unittest
 from flask import current_app
 from app import create_app, db
-from app.models import User, UserData, Text, TextHistory, EncryptedContent
+from app.models import User, UserData, Text, TextHistory
 from cryptography.fernet import Fernet
 from app.services import UserService
 
@@ -65,16 +65,23 @@ class TextTestCase(unittest.TestCase):
     def test_text_change_content(self):
         text = Text(content="Hello World", language="English")
         text.save()
-        text.change_content("New Content")
+        old_content = text.content
+        new_content = "New Content"
+        text.change_content(new_content)
         self.assertEqual(text.content, "New Content")
         self.assertEqual(text.length, len("New Content"))
+        
+        # Verifica que se haya guardado la versión anterior en TextHistory
+        history = TextHistory.query.filter_by(text_id=text.id).first()
+        self.assertIsNotNone(history)
+        self.assertEqual(history.content, old_content)
 
     def test_text_encrypt_decrypt_content(self):
         text = Text(content="Hello World", language="English")
-        key = Fernet.generate_key()
-        encrypted_content = text.encrypt_content(key)
-        decrypted_content = text.decrypt_content(key)
-        self.assertEqual(decrypted_content, text.content)
+        text.save()
+        encrypted_content = text.encrypted_content
+        decrypted_content = text.decrypt_content()
+        self.assertEqual(decrypted_content, "Hello World")
 
     def test_user_text(self):
         from app.models.user import User

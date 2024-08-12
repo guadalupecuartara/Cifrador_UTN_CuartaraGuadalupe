@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 from app import db
-from app.models.encrypted_content import EncryptedContent
+from cryptography.fernet import Fernet
 
 @dataclass(init=False, repr=True, eq=True)
 class Text(db.Model):
@@ -12,8 +12,8 @@ class Text(db.Model):
     language: str = db.Column(db.String(120), nullable=False) # Lenguaje del texto
     history = db.relationship('TextHistory', backref='text', lazy=True) # Relación uno a uno con TextHistory
     user_id: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True) # ID del usuario propietario del texto
-    encryptor_id: int = db.Column(db.Integer, db.ForeignKey('encrypted.id'), nullable=True) 
-    encryptor= db.relationship('EncryptedContent', backref="text",uselist=False)
+    encrypted_content: str = db.Column(db.String(1000), nullable=True)
+    encryption_key: bytes = db.Column(db.LargeBinary, nullable=True)
     
     def __init__(self, content: str, language: str):
         self.content = content
@@ -21,6 +21,16 @@ class Text(db.Model):
         self.length = len(content) #Calcular la longitud del texto 
         from app.models.text_history import TextHistory
         self.history = TextHistory(content=content) # Crear un nuevo historial de texto
+        self.encryption_key = Fernet.generate_key()  # Generar una clave de encriptación
+        self.encrypt_content()
+    
+    def encrypt_content(self) -> None:
+        fernet = Fernet(self.encryption_key)
+        self.encrypted_content = fernet.encrypt(self.content.encode()).decode()
+    
+    def decrypt_content(self) -> str:
+        fernet = Fernet(self.encryption_key)
+        return fernet.decrypt(self.encrypted_content.encode()).decode()
     
     def change_content(self, new_content: str) -> None:
          # Cambia el contenido del texto y guarda la versión anterior en TextHistory.
@@ -28,6 +38,7 @@ class Text(db.Model):
 
         old_content = self.content
         self.content = new_content
+        self.encrypt_content()  # Encriptar el nuevo contenido
         history = TextHistory(text_id=self.id, content=old_content)
         history.save()
         
