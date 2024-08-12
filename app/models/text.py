@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 from app import db
-#from .encrypted_content import EncryptedContent
-#from .text_history import TextHistory
+from app.models.encrypted_content import EncryptedContent
 
 @dataclass(init=False, repr=True, eq=True)
 class Text(db.Model):
@@ -11,10 +10,10 @@ class Text(db.Model):
     content: str = db.Column(db.String(120),nullable=False) # Contenido del texto
     length: int = db.Column(db.Integer, nullable=False) # Longitud del texto
     language: str = db.Column(db.String(120), nullable=False) # Lenguaje del texto
-    history = db.relationship('TextHistory', backref='text', uselist=False) # Relación uno a uno con TextHistory
+    history = db.relationship('TextHistory', backref='text', lazy=True) # Relación uno a uno con TextHistory
     user_id: int = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True) # ID del usuario propietario del texto
-    encryptor_id: int = db.Column(db.Integer, db.ForeignKey('encryptors.id'), nullable=True) 
-    encryptor= db.relationship('Encryptor', backref="text",uselist=False)
+    encryptor_id: int = db.Column(db.Integer, db.ForeignKey('encrypted.id'), nullable=True) 
+    encryptor= db.relationship('EncryptedContent', backref="text",uselist=False)
     
     def __init__(self, content: str, language: str):
         self.content = content
@@ -24,9 +23,13 @@ class Text(db.Model):
         self.history = TextHistory(content=content) # Crear un nuevo historial de texto
     
     def change_content(self, new_content: str) -> None:
+         # Cambia el contenido del texto y guarda la versión anterior en TextHistory.
+        from app.models.text_history import TextHistory  # Importa dentro de la función o método
+
+        old_content = self.content
         self.content = new_content
-        self.length = len(new_content)
-        db.session.commit()
+        history = TextHistory(text_id=self.id, content=old_content)
+        history.save()
         
     def save(self) -> 'Text':
         db.session.add(self)
@@ -48,11 +51,3 @@ class Text(db.Model):
     @classmethod
     def find_by(cls, **kwargs) -> List['Text']:
         return cls.query.filter_by(**kwargs).all()
-
-    def encrypt_content(self, key: bytes) -> 'EncryptedContent':
-        from .encrypted_content import EncryptedContent
-        return EncryptedContent.encrypt(self.content, key)
-
-    def decrypt_content(self, key: bytes) -> str:
-        from .encrypted_content import EncryptedContent
-        return EncryptedContent.decrypt(self.content, key)

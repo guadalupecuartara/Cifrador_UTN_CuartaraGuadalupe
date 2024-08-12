@@ -1,8 +1,9 @@
 import unittest
 from flask import current_app
 from app import create_app, db
-from app.models import Text, TextHistory, EncryptedContent
+from app.models import User, UserData, Text, TextHistory, EncryptedContent
 from cryptography.fernet import Fernet
+from app.services import UserService
 
 class TextTestCase(unittest.TestCase):
     """
@@ -74,6 +75,25 @@ class TextTestCase(unittest.TestCase):
         encrypted_content = text.encrypt_content(key)
         decrypted_content = text.decrypt_content(key)
         self.assertEqual(decrypted_content, text.content)
+
+    def test_user_text(self):
+        from app.models.user import User
+        from app.models.user_data import UserData
+
+        data = UserData()
+        data.firstname = "Pablo"
+        data.lastname = "Prats"
+        data.address = "Address 1234"
+        data.city = "San Rafael"
+        data.country = "Argentina"
+        data.phone = "54260123456789"
+
+        user = User(data)
+        user.email = "test@test.com"
+        user.username = "pabloprats"
+        user.password = "Qvv3r7y"
+        user_service = UserService()
+        user_service.save(user)
 
 if __name__ == '__main__':
     unittest.main()

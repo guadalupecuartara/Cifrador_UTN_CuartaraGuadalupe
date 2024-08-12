@@ -29,6 +29,10 @@ class TextHistory(db.Model):
     def find(cls, id: int) -> "TextHistory":
         return cls.query.get(id)
     
+    @classmethod
+    def find_by(cls, **kwargs) -> List["TextHistory"]:
+        return cls.query.filter_by(**kwargs).all()
+    
     def view_history(self) -> List[str]:
         return self.entries
 
