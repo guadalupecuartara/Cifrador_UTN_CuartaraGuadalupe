@@ -13,10 +13,6 @@ class RoleRepository:
         :param role: Role
         :return: Role
         """
-        # Verificar si ya existe un rol con el mismo nombre
-    #existing_role = self.find_by_name(role.name) #otorgado por el chat a las 2145
-    #if existing_role:
-     #   return existing_role  # O lanzar una excepción
         db.session.add(role)
         db.session.commit()
         return role

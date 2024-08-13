@@ -111,7 +111,7 @@ class TextTestCase(unittest.TestCase):
         self.assertEqual(saved_user.email, "test@test.com")
         # Verificar el hash de la contraseña
         self.assertTrue(check_password_hash(saved_user.password, "Qvv3r7y"))
-    """
+    
     def test_user_text(self):
         from app.models.user import User
         from app.models.user_data import UserData
@@ -130,7 +130,24 @@ class TextTestCase(unittest.TestCase):
         user.password = "Qvv3r7y"
         user_service = UserService()
         user_service.save(user)
-    """
+    
+    def __get_user(self):
+        data = UserData()
+        data.firstname = self.FIRSTNAME_PRUEBA
+        data.lastname = self.LASTNAME_PRUEBA
+        data.phone = self.PHONE_PRUEBA
+        data.address = self.ADDRESS_PRUEBA
+        data.city = self.CITY_PRUEBA
+        data.country = self.COUNTRY_PRUEBA
+        
+        user = User(
+            username=self.USERNAME_PRUEBA,
+            email=self.EMAIL_PRUEBA,
+            password=self.PASSWORD_PRUEBA,
+            data=data  # Usa 'data' en lugar de 'user_data'
+        )
+
+        return user
 
 if __name__ == '__main__':
     unittest.main()

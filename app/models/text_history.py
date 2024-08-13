@@ -10,7 +10,6 @@ class TextHistory(db.Model):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text_id: int = db.Column(db.Integer, db.ForeignKey('texts.id'), nullable=False)# ID del texto asociado
     content: str = db.Column(db.String(100), nullable=False)
-    #entries = db.Column(db.PickleType, default=[])
     entries = db.Column(db.ARRAY(db.String), default=[])  # Cambiado a ARRAY de cadenas
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
     # Relación inversa con Text
@@ -24,19 +23,7 @@ class TextHistory(db.Model):
    
     def view_history(self) -> list:
         return self.entries if self.entries is not None else []
-    """
-    def update_history(self, new_entries: List[str]) -> None:
-        self.entries = new_entries
-        db.session.commit()
-        """
-    """
-    def add_entry(self, entry: str) -> None:
-        if self.entries is None:
-            self.entries = []  # Inicializar entries si es None
-        self.entries.append(entry)
-        print(f"Added entry: {entry}, current entries: {self.entries}")
-        db.session.commit()  # Asegúrate de que los cambios se guardan en la base de datos
-     """   
+   
     def save(self) -> "TextHistory":
         db.session.add(self)
         db.session.commit()
@@ -53,13 +40,7 @@ class TextHistory(db.Model):
     @classmethod
     def find_by(cls, **kwargs) -> List["TextHistory"]:
         return cls.query.filter_by(**kwargs).all()
-    """
-    def view_history(self) -> List[str]:
-        return self.entries if self.entries is not None else []
-        print("Viewing history:", history)  # Agrega esta línea para depuración
-        return history
-        
-    """
+
     @staticmethod
     def view_versions(text_id: int) -> List["TextHistory"]:
         return (

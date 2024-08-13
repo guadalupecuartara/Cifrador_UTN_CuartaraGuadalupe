@@ -8,10 +8,12 @@ response_schema = ResponseSchema()
 
 @home.route('/', methods=['GET'])
 def index():
-    resp = jsonify("OK")
-    resp.status_code = 200
-    return resp
+    # Construir la respuesta usando ResponseBuilder
     response_builder = ResponseBuilder()
     response_builder.add_message("Bienvenidos").add_status_code(200).add_data({'title': 'API Auth'})
     response = response_builder.build()
-    return response_schema.dump(response), 200
+    
+    # Serializar la respuesta usando ResponseSchema y devolverla como JSON
+    json_response = response_schema.dump(response)
+    
+    return jsonify(json_response), 200

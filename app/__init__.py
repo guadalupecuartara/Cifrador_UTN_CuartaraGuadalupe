@@ -29,10 +29,6 @@ def create_app() -> Flask:
     db.init_app(app)
     migrate.init_app(app, db)
     
-    #https://flask.palletsprojects.com/es/main/blueprints/ ###sypyestanebte los borra
-    #from app.resources import home ###sypyestanebte los borra
-    #app.register_blueprint(home, url_prefix='/api/v1') ###sypyestanebte los borra
-    
     @app.shell_context_processor    
     def ctx():
         return {"app": app}

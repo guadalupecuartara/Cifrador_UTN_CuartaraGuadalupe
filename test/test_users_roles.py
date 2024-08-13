@@ -1,7 +1,7 @@
 import os
 import unittest
 from flask import current_app
-from sqlalchemy import text #agregado a las 2108 por el chat
+from sqlalchemy import text 
 from app import create_app
 from app.models import Role, User, UserData
 from app import db
@@ -35,11 +35,6 @@ class UsersRoleTestCase(unittest.TestCase):
 
         def tearDown(self):
             db.session.remove()
-            #with db.engine.connect() as conn:
-             #   conn.execute(text('DROP TABLE IF EXISTS texts CASCADE'))
-              #  conn.execute(text('DROP TABLE IF EXISTS text_histories CASCADE'))
-               # conn.execute(text('DROP TABLE IF EXISTS users CASCADE'))
-                #conn.execute(text('DROP TABLE IF EXISTS user_datas CASCADE'))
             db.drop_all()
             self.app_context.pop()
 
@@ -50,14 +45,11 @@ class UsersRoleTestCase(unittest.TestCase):
             role = Role(name=self.ROL_ADMIN, description=self.ROL_ADMIN_DESC)
             role.add_user(self.__get_user())
             role_service.save(role)
-
+            
             self.assertGreaterEqual(role.id, 1)
-            #self.assertTrue(role.name, self.ROL_ADMIN)
-            #self.assertTrue(role.description, self.ROL_ADMIN_DESC)
             self.assertEqual(role.name, self.ROL_ADMIN)
             self.assertEqual(role.description, self.ROL_ADMIN_DESC)
             self.assertGreaterEqual(len(role.users) , 1)
-            #self.assertTrue(role.users[0].username, self.USERNAME_PRUEBA)
             self.assertEqual(role.users[0].username, self.USERNAME_PRUEBA)
 
         def test_user_save(self):
@@ -67,23 +59,15 @@ class UsersRoleTestCase(unittest.TestCase):
             user_service.save(user)
 
             self.assertGreaterEqual(user.id, 1)
-            #self.assertTrue(user.email, self.EMAIL_PRUEBA)
-            #self.assertTrue(user.username, self.USERNAME_PRUEBA)
             self.assertEqual(user.email, self.EMAIL_PRUEBA)
             self.assertEqual(user.username, self.USERNAME_PRUEBA)
             self.assertIsNotNone(user.password)
             self.assertIsNotNone(user.data)
-            #self.assertTrue(user.data.address, self.ADDRESS_PRUEBA)
-            #self.assertTrue(user.data.firstname, self.FIRSTNAME_PRUEBA)
-            #self.assertTrue(user.data.lastname, self.LASTNAME_PRUEBA)
-            #self.assertTrue(user.data.phone, self.PHONE_PRUEBA)
             self.assertEqual(user.data.address, self.ADDRESS_PRUEBA)
             self.assertEqual(user.data.firstname, self.FIRSTNAME_PRUEBA)
             self.assertEqual(user.data.lastname, self.LASTNAME_PRUEBA)
             self.assertEqual(user.data.phone, self.PHONE_PRUEBA)
             self.assertGreaterEqual(len(user.roles) , 1)
-            #self.assertTrue(user.roles[0].name, self.ROL_ADMIN)
-            #self.assertTrue(user.roles[1].name, self.ROL_USER)
             self.assertEqual(user.roles[0].name, self.ROL_ADMIN)
             self.assertEqual(user.roles[1].name, self.ROL_USER)
 
@@ -96,7 +80,6 @@ class UsersRoleTestCase(unittest.TestCase):
             data.address = self.ADDRESS_PRUEBA
             data.city = self.CITY_PRUEBA
             data.country = self.COUNTRY_PRUEBA
-
             user = User(data)
             user = User()
             user.data = data
@@ -104,28 +87,6 @@ class UsersRoleTestCase(unittest.TestCase):
             user.email = self.EMAIL_PRUEBA
             user.password = self.PASSWORD_PRUEBA
             return user
-            
         
 if __name__ == '__main__':
     unittest.main()
-    
-"""
-data = UserData(
-                firstname=self.FIRSTNAME_PRUEBA,
-                lastname=self.LASTNAME_PRUEBA,
-                phone=self.PHONE_PRUEBA,
-                address=self.ADDRESS_PRUEBA,
-                city=self.CITY_PRUEBA,
-                country=self.COUNTRY_PRUEBA
-            )
-            
-
-            # Crear User con todos los argumentos requeridos
-            user = User(
-                username=self.USERNAME_PRUEBA,
-                password=self.PASSWORD_PRUEBA,  # Contraseña en texto claro para la prueba
-                email=self.EMAIL_PRUEBA,
-                user_data=data
-            )
-            return user
-            """

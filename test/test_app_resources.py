@@ -27,7 +27,7 @@ class HomeResourceTestCase(unittest.TestCase):
         
         response = client.get(os.environ.get('API_BASE_URL'))
         
-        #TODO: La URL de la API debe cambiarse por una variable de entorno
+        #TODO: La URL de la API debe cambiarse por una variable de entorno 
         #response = client.get('http://localhost:5000/api/v1/')
         self.assertEqual(response.status_code, 200)
         response = responseSchema.load(response.get_json())

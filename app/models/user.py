@@ -25,13 +25,6 @@ class User(SoftDeleteMixin, AuditMixin, db.Model):
     users_rs = db.relationship("Text", backref="user", lazy=True)
     # * Relación con la tabla 'UserData' (datos de usuario), establecida a través de la propiedad 'user' en la clase UserData
 
-    ##########esto andaba a las 2:36
-    #def __init__(self, username, password, email, user_data: UserData = None):
-     #   self.username = username
-      #  self.password = password
-       # self.email = email
-        #self.data = user_data
-
     def __init__(self, username: str = None, password: str = None, email: str = None, data: UserData = None):
         self.data = data
         self.username = username

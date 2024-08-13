@@ -20,16 +20,12 @@ class TextHistoryTestCase(unittest.TestCase):
     def test_add_entry(self):
          # Crear una instancia de TextHistory
         history = TextHistory(text_id=self.text.id, content="Initial Content")
-        
         # Agregar la entrada
         history.add_entry("First Edit")
-        
         # Guardar los cambios
         history.save()
-        
         # Volver a consultar el historial desde la base de datos
         reloaded_history = TextHistory.query.get(history.id)
-        
         # Verificar que la entrada está en el historial
         self.assertIn("First Edit", reloaded_history.view_history())
        

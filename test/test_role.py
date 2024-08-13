@@ -30,8 +30,6 @@ class RoleTestCase(unittest.TestCase):
     
     def test_role(self):
         role = self.__get_role()
-        #self.assertTrue(role.name, self.ROL_NAME)
-        #self.assertTrue(role.description, self.ROL_DESCRIPCION)
         self.assertEqual(role.name, self.ROL_NAME)
         self.assertEqual(role.description, self.ROL_DESCRIPCION)
 
@@ -39,8 +37,6 @@ class RoleTestCase(unittest.TestCase):
         role = self.__get_role()
         role_service.save(role)
         self.assertGreaterEqual(role.id, 1)
-        #self.assertTrue(role.name, self.ROL_NAME)
-        #self.assertTrue(role.description, self.ROL_DESCRIPCION)
         self.assertEqual(role.name, self.ROL_NAME)
         self.assertEqual(role.description, self.ROL_DESCRIPCION)
 
@@ -49,8 +45,6 @@ class RoleTestCase(unittest.TestCase):
         role_service.save(role)
         role.description = 'Administrator Updated'
         role_service.update(role, role.id)
-        #self.assertTrue(role.name, self.ROL_NAME)
-        #self.assertTrue(role.description, 'Administrator Updated')
         self.assertEqual(role.name, self.ROL_NAME)
         self.assertEqual(role.description, 'Administrator Updated')
 
@@ -70,8 +64,6 @@ class RoleTestCase(unittest.TestCase):
         role = self.__get_role()
         role_service.save(role)
         role_find = role_service.find(role.id)
-        #self.assertTrue(role_find.name, self.ROL_NAME)
-        #self.assertTrue(role_find.description, self.ROL_DESCRIPCION)
         self.assertEqual(role_find.name, self.ROL_NAME)
         self.assertEqual(role_find.description, self.ROL_DESCRIPCION)
         
@@ -79,8 +71,6 @@ class RoleTestCase(unittest.TestCase):
         role = self.__get_role()
         role_service.save(role)
         role_find = role_service.find_by_name(self.ROL_NAME)
-        #self.assertTrue(role_find.name, self.ROL_NAME)
-        #self.assertTrue(role_find.description, self.ROL_DESCRIPCION)
         self.assertEqual(role_find.name, self.ROL_NAME)
         self.assertEqual(role_find.description, self.ROL_DESCRIPCION)
         
