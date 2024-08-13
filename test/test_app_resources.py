@@ -1,12 +1,18 @@
 import unittest
+from pathlib import Path
+from dotenv import load_dotenv
 from flask import current_app
 from app import create_app
 from app.mapping.response_schema import ResponseSchema
 from app.services.response_message import ResponseBuilder
+import os
 
+basedir= os.path.abspath(Path(__file__).parents[2])
+load_dotenv(os.path.join(basedir, ".env"))
 class HomeResourceTestCase(unittest.TestCase):
 
     def setUp(self):
+        os.environ['FLASK_CONTEXT'] = 'testing'
         self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -18,8 +24,11 @@ class HomeResourceTestCase(unittest.TestCase):
         message = ResponseBuilder().add_message("Bienvenidos").add_status_code(200).add_data({'title': 'API Auth'}).build()
         client = self.app.test_client(use_cookies=True)
         responseSchema = ResponseSchema()
+        
+        response = client.get(os.environ.get('API_BASE_URL'))
+        
         #TODO: La URL de la API debe cambiarse por una variable de entorno
-        response = client.get('http://localhost:5000/api/v1/')
+        #response = client.get('http://localhost:5000/api/v1/')
         self.assertEqual(response.status_code, 200)
         response = responseSchema.load(response.get_json())
         self.assertEqual(message.message, response['message'])
