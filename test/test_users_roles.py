@@ -1,5 +1,6 @@
 import unittest
 from flask import current_app
+from sqlalchemy import text #agregado a las 2108 por el chat
 from app import create_app
 from app.models import Role, User, UserData
 from app import db
@@ -32,6 +33,11 @@ class UsersRoleTestCase(unittest.TestCase):
 
         def tearDown(self):
             db.session.remove()
+            #with db.engine.connect() as conn:
+             #   conn.execute(text('DROP TABLE IF EXISTS texts CASCADE'))
+              #  conn.execute(text('DROP TABLE IF EXISTS text_histories CASCADE'))
+               # conn.execute(text('DROP TABLE IF EXISTS users CASCADE'))
+                #conn.execute(text('DROP TABLE IF EXISTS user_datas CASCADE'))
             db.drop_all()
             self.app_context.pop()
 
@@ -69,17 +75,24 @@ class UsersRoleTestCase(unittest.TestCase):
             self.assertTrue(user.roles[1].name, self.ROL_USER)
 
         def __get_user(self):
-            data = UserData()
-            data.firstname = self.FIRSTNAME_PRUEBA
-            data.lastname = self.LASTNAME_PRUEBA
-            data.phone = self.PHONE_PRUEBA
-            data.address = self.ADDRESS_PRUEBA
-            data.city = self.CITY_PRUEBA
-            data.country = self.COUNTRY_PRUEBA
+            data = UserData(
+                firstname=self.FIRSTNAME_PRUEBA,
+                lastname=self.LASTNAME_PRUEBA,
+                phone=self.PHONE_PRUEBA,
+                address=self.ADDRESS_PRUEBA,
+                city=self.CITY_PRUEBA,
+                country=self.COUNTRY_PRUEBA
+            )
+            
 
-            user = User(data)
-            user.username = self.USERNAME_PRUEBA
-            user.email = self.EMAIL_PRUEBA
-            user.password = self.PASSWORD_PRUEBA
-
+            # Crear User con todos los argumentos requeridos
+            user = User(
+                username=self.USERNAME_PRUEBA,
+                password=self.PASSWORD_PRUEBA,  # Contraseña en texto claro para la prueba
+                email=self.EMAIL_PRUEBA,
+                user_data=data
+            )
             return user
+        
+if __name__ == '__main__':
+    unittest.main()

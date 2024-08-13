@@ -13,11 +13,14 @@ class UserData(SoftDeleteMixin, db.Model):
     address: str = db.Column(db.String(120), nullable=False)
     city: str   = db.Column(db.String(120), nullable=False)
     country: str = db.Column(db.String(120), nullable=False)
-    user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
-    #Relacion Uno a Uno bidireccional con User
-    #Flask Web Development Capitulo: Database Relationships Revisited Pag 49,149 
-    user = db.relationship("User", back_populates='data', uselist=False)
+    # Relación con la tabla 'users' (usuarios), establecida a través de la columna 'user_id'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship(
+        "User", back_populates="data", foreign_keys=[user_id], uselist=False
+    )
     
-    #Relacion Muchos a Uno bidireccional con Profile
-    profile_id = db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id'))
-    profile = db.relationship("Profile", back_populates='data')
+    # Relación Muchos a Uno bidireccional con Profile
+    profile_id = db.Column(db.Integer, db.ForeignKey("profiles.id"), nullable=True)
+    profile = db.relationship(
+        "Profile", back_populates="data", foreign_keys=[profile_id]
+    )

@@ -87,7 +87,27 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(user_find.email, user.email)
 
     def __get_user(self):
+    # Crear una instancia de UserData
+        data = UserData(
+            firstname=self.FIRSTNAME_PRUEBA,
+            lastname=self.LASTNAME_PRUEBA,
+            phone=self.PHONE_PRUEBA,
+            address=self.ADDRESS_PRUEBA,
+            city=self.CITY_PRUEBA,
+            country=self.COUNTRY_PRUEBA
+    )
 
+    # Crear una instancia de User con todos los argumentos necesarios
+        user = User(
+            username=self.USERNAME_PRUEBA,
+            password=self.PASSWORD_PRUEBA,
+            email=self.EMAIL_PRUEBA,
+            user_data=data
+        )
+    return user
+    """
+    def __get_user(self):
+    # Crea una instancia de UserData
         data = UserData()
         data.firstname = self.FIRSTNAME_PRUEBA
         data.lastname = self.LASTNAME_PRUEBA
@@ -96,12 +116,43 @@ class UserTestCase(unittest.TestCase):
         data.city = self.CITY_PRUEBA
         data.country = self.COUNTRY_PRUEBA
 
+    # Crea una instancia de User pasando username, password, email y user_data
+    user = User(
+        username=self.USERNAME_PRUEBA,
+        password=self.PASSWORD_PRUEBA,
+        email=self.EMAIL_PRUEBA,
+        user_data=data
+    )
+    return user
+    """
+"""
+    def __get_user(self):
         user = User(data)
         user.username = self.USERNAME_PRUEBA
         user.email = self.EMAIL_PRUEBA
         user.password = self.PASSWORD_PRUEBA
+        data = UserData(
+        firstname=self.FIRSTNAME_PRUEBA,
+        lastname=self.LASTNAME_PRUEBA,
+        phone=self.PHONE_PRUEBA,
+        address=self.ADDRESS_PRUEBA,
+        city=self.CITY_PRUEBA,
+        country=self.COUNTRY_PRUEBA
+        )
+        
+        # Asocia UserData al User
+        user.data = data
+        #codigo profe
+        data = UserData()
+        data.firstname = self.FIRSTNAME_PRUEBA
+        data.lastname = self.LASTNAME_PRUEBA
+        data.phone = self.PHONE_PRUEBA
+        data.address = self.ADDRESS_PRUEBA
+        data.city = self.CITY_PRUEBA
+        data.country = self.COUNTRY_PRUEBA
+    #codprofe
         return user
-
+"""
 
 if __name__ == '__main__':
     unittest.main()

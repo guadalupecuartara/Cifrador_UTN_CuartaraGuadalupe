@@ -4,6 +4,7 @@ from app import create_app, db
 from app.models import User, UserData, Text, TextHistory
 from cryptography.fernet import Fernet
 from app.services import UserService
+from werkzeug.security import check_password_hash
 
 class TextTestCase(unittest.TestCase):
     """
@@ -30,7 +31,7 @@ class TextTestCase(unittest.TestCase):
         self.assertEqual(text.content, "Hello World")
         self.assertEqual(text.language, "English")
         self.assertEqual(text.length, len("Hello World"))
-        self.assertIsNotNone(text.history)
+        self.assertIsNotNone(text.histories)
 
     def test_text_save(self):
         text = Text(content="Hello World", language="English")
@@ -87,6 +88,34 @@ class TextTestCase(unittest.TestCase):
         from app.models.user import User
         from app.models.user_data import UserData
 
+        data = UserData(
+            firstname = "Pablo",
+            lastname = "Prats",
+            address = "Address 1234",
+            city = "San Rafael",
+            country = "Argentina",
+            phone = "54260123456789"
+            )
+        user = User(
+            username = "pabloprats",
+            password = "Qvv3r7y",
+            email = "test@test.com",
+            user_data=data
+            )
+        user_service = UserService()
+        user_service.save(user)
+        # Verificar que el usuario se haya guardado correctamente
+        saved_user = User.query.first()
+        self.assertIsNotNone(saved_user)
+        self.assertEqual(saved_user.username, "pabloprats")
+        self.assertEqual(saved_user.email, "test@test.com")
+        # Verificar el hash de la contraseña
+        self.assertTrue(check_password_hash(saved_user.password, "Qvv3r7y"))
+    """
+    def test_user_text(self):
+        from app.models.user import User
+        from app.models.user_data import UserData
+
         data = UserData()
         data.firstname = "Pablo"
         data.lastname = "Prats"
@@ -101,6 +130,7 @@ class TextTestCase(unittest.TestCase):
         user.password = "Qvv3r7y"
         user_service = UserService()
         user_service.save(user)
+    """
 
 if __name__ == '__main__':
     unittest.main()
